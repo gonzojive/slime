@@ -45,13 +45,8 @@ o@c this comment prevents a newline!
 @code{\command\}@*
 @end macro
 
-<<<<<<< slime.texi
 @set EDITION 1.0
-@set UPDATED @code{$Date: 2004/09/17 13:01:01 $}
-=======
-@set EDITION 1.0
-@set UPDATED @code{$Date: 2004/09/17 13:01:01 $}
->>>>>>> 1.28
+@set UPDATED @code{$Date: 2004/09/23 23:17:43 $}
 
 @titlepage
 @title SLIME User Manual
