@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-lispworks.lisp,v 1.19 2004/01/21 23:03:23 heller Exp $
+;;;   $Id: swank-lispworks.lisp,v 1.20 2004/01/31 11:50:25 heller Exp $
 ;;;
 
 (in-package :swank)
@@ -296,6 +296,7 @@ Return NIL if the symbol is unbound."
   (etypecase dspec
     (cons (ecase (car dspec)
             (defun `(:function-name ,(symbol-name (cadr dspec))))
+            (method `(:function-name ,(symbol-name (cadr dspec))))
             ;; XXX this isn't quite right
             (lw:top-level-form `(:source-path ,(cdr dspec) nil))))
     (symbol `(:function-name ,(symbol-name dspec)))))
@@ -413,4 +414,24 @@ Return NIL if the symbol is unbound."
 
 (defimplementation call-with-lock-held (lock function)
   (mp:with-lock (lock) (funcall function)))
+
+(defimplementation current-thread ()
+  mp:*current-process*)
+
+(defimplementation interrupt-thread (thread fn)
+  (mp:process-interrupt thread fn))
+
+(defvar *mailbox-lock* (mp:make-lock))
+
+(defun mailbox (thread)
+  (mp:with-lock (*mailbox-lock*)
+    (or (getf (mp:process-plist thread) 'mailbox)
+        (setf (getf (mp:process-plist thread) 'mailbox)
+              (mp:make-mailbox)))))
+
+(defimplementation receive ()
+  (mp:mailbox-read (mailbox mp:*current-process*)))
+
+(defimplementation send (thread object)
+  (mp:mailbox-send (mailbox thread) object))
 

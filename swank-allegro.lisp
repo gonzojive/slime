@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-allegro.lisp,v 1.11 2004/01/22 00:37:35 heller Exp $
+;;;   $Id: swank-allegro.lisp,v 1.12 2004/01/31 11:50:25 heller Exp $
 ;;;
 ;;; This code was written for 
 ;;;   Allegro CL Trial Edition "5.0 [Linux/X86] (8/29/98 10:57)"
@@ -33,6 +33,8 @@
    ))
 
 ;;;; TCP Server
+
+(setq *swank-in-background* :spawn)
 
 (defimplementation create-socket (port)
   (socket:make-socket :connect :passive :local-port port :reuse-address t))
@@ -333,3 +335,39 @@
 
 (defimplementation call-with-lock-held (lock function)
   (mp:with-process-lock (lock) (funcall function)))
+
+(defimplementation current-thread ()
+  mp:*current-process*)
+
+(defimplementation all-threads ()
+  mp:*all-processes*)
+
+(defimplementation interrupt-thread (thread fn)
+  (mp:process-interrupt thread fn))
+
+(defvar *mailbox-lock* (mp:make-process-lock :name "mailbox lock"))
+
+(defstruct (mailbox (:conc-name mailbox.)) 
+  (mutex (mp:make-process-lock :name "process mailbox"))
+  (queue '() :type list))
+
+(defun mailbox (thread)
+  "Return THREAD's mailbox."
+  (mp:with-process-lock (*mailbox-lock*)
+    (or (getf (mp:process-property-list thread) 'mailbox)
+        (setf (getf (mp:process-property-list thread) 'mailbox)
+              (make-mailbox)))))
+
+(defimplementation send (thread message)
+  (let* ((mbox (mailbox thread))
+         (mutex (mailbox.mutex mbox)))
+    (mp:with-process-lock (mutex)
+      (setf (mailbox.queue mbox)
+            (nconc (mailbox.queue mbox) (list message))))))
+
+(defimplementation receive ()
+  (let* ((mbox (mailbox mp:*current-process*))
+         (mutex (mailbox.mutex mbox)))
+    (mp:process-wait "receive" #'mailbox.queue mbox)
+    (mp:with-process-lock (mutex)
+      (pop (mailbox.queue mbox)))))
