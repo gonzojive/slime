@@ -5,7 +5,7 @@
 ;;; Copyright (C) 2003, James Bielman  <jamesjb@jamesjb.com>
 ;;; Released into the public domain.
 ;;;
-;;;   $Id: swank-backend.lisp,v 1.7 2003/12/07 19:16:24 heller Exp $
+;;;   $Id: swank-backend.lisp,v 1.8 2003/12/11 02:19:33 dbarlow Exp $
 ;;;
 
 ;; This is a skeletal implementation of the Slime internals interface.
@@ -118,6 +118,12 @@
 
 
 ;;;; Compilation
+
+(defgeneric call-with-compilation-hooks (func)
+  (:documentation
+   "Call FUNC with hooks to trigger SLDB on compiler errors."))
+(defmacro with-compilation-hooks (() &body body)
+  `(call-with-compilation-hooks (lambda () (progn ,@body))))
 
 (defgeneric compile-string-for-emacs (string &key buffer position)
   (:documentation
