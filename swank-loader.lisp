@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-loader.lisp,v 1.2 2003/10/18 05:06:44 jbielman Exp $
+;;;   $Id: swank-loader.lisp,v 1.3 2003/11/16 18:10:25 heller Exp $
 ;;;
 
 (defpackage :swank-loader
@@ -24,10 +24,11 @@
                      (or *compile-file-pathname* *load-pathname*
                          *default-pathname-defaults*)))))
 
-(defparameter *sysdep-pathname*
-  (make-swank-pathname (or #+cmu "swank-cmucl"
-                           #+sbcl "swank-sbcl"
-                           #+openmcl "swank-openmcl")))
+(defparameter *sysdep-pathnames*
+  (mapcar #'make-swank-pathname 
+           #+cmu '("swank-cmucl")
+           #+sbcl '("swank-sbcl" "swank-gray")
+           #+openmcl '("swank-openmcl" "swank-gray")))
 
 (defparameter *swank-pathname* (make-swank-pathname "swank"))
 
@@ -56,5 +57,5 @@ recompiled."
             ;; so we can try to debug it.
             (load source-pathname)))))))
 
-(compile-files-if-needed-serially *swank-pathname* *sysdep-pathname*)
+(apply #'compile-files-if-needed-serially *swank-pathname* *sysdep-pathnames*)
 
