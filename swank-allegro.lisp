@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-allegro.lisp,v 1.6 2004/01/13 18:20:04 heller Exp $
+;;;   $Id: swank-allegro.lisp,v 1.7 2004/01/15 18:29:22 heller Exp $
 ;;;
 ;;; This code was written for 
 ;;;   Allegro CL Trial Edition "5.0 [Linux/X86] (8/29/98 10:57)"
@@ -29,6 +29,7 @@
    excl:stream-unread-char
    excl:stream-clear-input
    excl:stream-line-column
+   excl:stream-read-char-no-hang
    ))
 
 (defun without-interrupts* (body)
@@ -50,6 +51,8 @@
 
 (defmethod spawn (fn &key name)
   (mp:process-run-function name fn))
+
+(defmethod emacs-connected ())
 
 ;;;
 
