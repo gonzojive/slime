@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-loader.lisp,v 1.1 2003/10/17 19:09:14 jbielman Exp $
+;;;   $Id: swank-loader.lisp,v 1.2 2003/10/18 05:06:44 jbielman Exp $
 ;;;
 
 (defpackage :swank-loader
@@ -47,6 +47,7 @@ recompiled."
               (when (or needs-recompile
                         (not (probe-file binary-pathname))
                         (file-newer-p source-pathname binary-pathname))
+                (format t "~&;; Compiling ~A...~%" source-pathname)
                 (compile-file source-pathname)
                 (setq needs-recompile t))
               (load binary-pathname))
