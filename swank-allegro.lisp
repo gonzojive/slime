@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-allegro.lisp,v 1.12 2004/01/31 11:50:25 heller Exp $
+;;;   $Id: swank-allegro.lisp,v 1.13 2004/02/07 19:30:05 heller Exp $
 ;;;
 ;;; This code was written for 
 ;;;   Allegro CL Trial Edition "5.0 [Linux/X86] (8/29/98 10:57)"
@@ -323,12 +323,12 @@
 (defimplementation spawn (fn &key name)
   (mp:process-run-function name fn))
 
-;; XXX: shurtcut
-(defimplementation thread-id ()
-  (mp:process-name mp:*current-process*))
+(defimplementation thread-name (thread)
+  (mp:process-name thread))
 
-(defimplementation thread-name (thread-id)
-  thread-id)
+(defimplementation thread-status (thread)
+  (format nil "~A ~D" (mp:process-whostate thread)
+          (mp:process-priority thread)))
 
 (defimplementation make-lock (&key name)
   (mp:make-process-lock :name name))
@@ -340,7 +340,7 @@
   mp:*current-process*)
 
 (defimplementation all-threads ()
-  mp:*all-processes*)
+  (copy-list mp:*all-processes*))
 
 (defimplementation interrupt-thread (thread fn)
   (mp:process-interrupt thread fn))
