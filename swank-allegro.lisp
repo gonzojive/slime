@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-allegro.lisp,v 1.4 2003/12/14 07:58:12 heller Exp $
+;;;   $Id: swank-allegro.lisp,v 1.5 2004/01/02 18:23:14 heller Exp $
 ;;;
 ;;; This code was written for 
 ;;;   Allegro CL Trial Edition "5.0 [Linux/X86] (8/29/98 10:57)"
@@ -35,6 +35,8 @@
   (excl:without-interrupts (funcall body)))
 
 ;;; TCP Server
+
+(setq *start-swank-in-background* nil)
 
 (defun create-swank-server (port &key (reuse-address t) 
                             (announce #'simple-announce-function)
@@ -145,10 +147,6 @@
         (*print-length* 10))
     (funcall debugger-loop-fn)))
 
-(defun format-condition-for-emacs ()
-  (format nil "~A~%   [Condition of type ~S]"
-          *swank-debugger-condition* (type-of *swank-debugger-condition*)))
-
 (defun format-restarts-for-emacs ()
   (loop for restart in *sldb-restarts*
         collect (list (princ-to-string (restart-name restart))
@@ -168,16 +166,14 @@
 
 (defmethod backtrace (start-frame-number end-frame-number)
   (flet ((format-frame (f i)
-	   (with-output-to-string (stream)
-	     (let ((*print-pretty* *sldb-pprint-frames*))
-	       (format stream "~D: " i)
-	       (debugger:output-frame stream f :moderate)))))
+           (print-with-frame-label 
+            i (lambda (s) (debugger:output-frame s f :moderate)))))
     (loop for i from start-frame-number
 	  for f in (compute-backtrace start-frame-number end-frame-number)
 	  collect (list i (format-frame f i)))))
 
 (defmethod debugger-info-for-emacs (start end)
-  (list (format-condition-for-emacs)
+  (list (debugger-condition-for-emacs)
         (format-restarts-for-emacs)
         (backtrace start end)))
 
@@ -193,7 +189,7 @@
 (defmethod frame-locals (index)
   (let ((frame (nth-frame index)))
     (loop for i from 0 below (debugger:frame-number-vars frame)
-	  collect (list :symbol (debugger:frame-var-name frame i)
+	  collect (list :name (to-string (debugger:frame-var-name frame i))
 			:id 0
 			:value-string 
 			(to-string (debugger:frame-var-value frame i))))))
