@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-allegro.lisp,v 1.1 2003/12/06 13:13:57 heller Exp $
+;;;   $Id: swank-allegro.lisp,v 1.2 2003/12/07 19:16:24 heller Exp $
 ;;;
 ;;; This code was written for 
 ;;;   Allegro CL Trial Edition "5.0 [Linux/X86] (8/29/98 10:57)"
@@ -173,8 +173,7 @@ until the remote Emacs goes away."
   (nth index *sldb-restarts*))
 
 (defslimefun invoke-nth-restart (index)
-  (let ((restart (nth-restart index)))
-    (invoke-restart restart)))
+  (invoke-restart-interactively (nth-restart index)))
 
 (defmethod frame-locals (index)
   (let ((frame (nth-frame index)))
@@ -254,7 +253,7 @@ until the remote Emacs goes away."
                 )))
       locations)))
 
-(defslimefun find-function-locations (symbol-name)
+(defmethod find-function-locations (symbol-name)
   (multiple-value-bind (symbol foundp) (find-symbol-designator symbol-name)
     (cond ((not foundp)
            (list (list :error (format nil "Unkown symbol: ~A" symbol-name))))

@@ -5,7 +5,7 @@
 ;;; Copyright (C) 2003, James Bielman  <jamesjb@jamesjb.com>
 ;;; Released into the public domain.
 ;;;
-;;;   $Id: swank-backend.lisp,v 1.6 2003/11/29 22:12:42 dbarlow Exp $
+;;;   $Id: swank-backend.lisp,v 1.7 2003/12/07 19:16:24 heller Exp $
 ;;;
 
 ;; This is a skeletal implementation of the Slime internals interface.
@@ -58,7 +58,7 @@
            #:swank-macroexpand-1
            #:untrace-all
            #:toggle-trace-fdefinition
-           #:function-source-location-for-emacs
+           #:find-function-locations
            #:who-binds
            #:who-references
            #:who-calls
@@ -281,9 +281,43 @@ appropriate context."))
 
 ;;;; Queries
 
-(defgeneric function-source-location-for-emacs (function-name)
+#+(or)
+;;; This is probably a better interface than find-function-locations.
+(defgeneric find-definitions (name)
   (:documentation
-   "Return the canonical source location FUNCTION-NAME.
+   "Return a list of (LABEL . LOCATION) pairs for NAME's definitions.
 
-FIXME: Document the plethora of valid return types."))
+NAME is string denoting a symbol or \"definition specifier\".
+
+LABEL is a string describing the definition, e.g., \"foo\" or
+\"(method foo (string number))\" or \"(variable bar)\".
+
+LOCATION is a source location of the form:
+
+<location> ::= (:location <buffer> <position>)
+             | (:error <message>) 
+
+<buffer>   ::= (:file <filename>)
+             | (:buffer <buffername>)
+             | (:source-form <string>)
+
+<position> ::= (:position <fixnum> [<align>]) ; 1 based
+             | (:function-name <string>)
+"))
+
+(defgeneric find-function-locations (name)
+  (:documentation
+   "Return a list (LOCATION LOCATION ...) for NAME's definitions.
+
+LOCATION is a source location of the form:
+
+<location> ::= (:location <buffer> <position>)
+             | (:error <message>) 
+
+<buffer>   ::= (:file <filename>)
+             | (:buffer <buffername>)
+             | (:source-form <string>)
+
+<position> ::= (:position <fixnum> [<align>]) ; 1 based
+             | (:function-name <string>)"))
 
