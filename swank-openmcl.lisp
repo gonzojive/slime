@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.44 2004/01/13 18:20:04 heller Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.45 2004/01/13 22:51:07 heller Exp $
 ;;;
 
 ;;;
@@ -75,6 +75,8 @@
 
 ;;; TCP Server
 
+(setq *swank-in-background* :spawn)
+
 (defmethod create-socket (port)
   (ccl:make-socket :connect :passive :local-port port :reuse-address t))
 
@@ -89,6 +91,9 @@
 
 (defmethod spawn (fn &key name)
   (ccl:process-run-function name fn))
+
+(defmethod emacs-connected ()
+  (setq ccl::*interactive-abort-process* ccl::*current-process*)
 
 ;;;
 
