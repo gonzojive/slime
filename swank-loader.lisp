@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-loader.lisp,v 1.15 2004/01/22 00:09:15 heller Exp $
+;;;   $Id: swank-loader.lisp,v 1.16 2004/02/05 05:57:04 wjenkner Exp $
 ;;;
 
 (cl:defpackage :swank-loader
@@ -32,7 +32,7 @@
           #+openmcl '("swank-openmcl" "swank-gray")
           #+lispworks '("swank-lispworks" "swank-gray")
           #+allegro '("swank-allegro" "swank-gray")
-          #+clisp '("xref" "swank-clisp" "swank-gray")
+          #+clisp '("xref" "metering" "swank-clisp" "swank-gray")
           ))
 
 (defparameter *swank-pathname* (make-swank-pathname "swank"))
