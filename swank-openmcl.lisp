@@ -12,9 +12,6 @@
 ;;;
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
-;;;
-;;;   $Id: swank-openmcl.lisp,v 1.47 2004/01/16 06:51:08 lgorrie Exp $
-;;;
 
 ;;;
 ;;; This is the beginning of a Slime backend for OpenMCL.  It has been
