@@ -5,7 +5,7 @@
 ;;; Copyright (C) 2003, James Bielman  <jamesjb@jamesjb.com>
 ;;; Released into the public domain.
 ;;;
-;;;   $Id: swank-backend.lisp,v 1.3 2003/11/23 14:13:05 lgorrie Exp $
+;;;   $Id: swank-backend.lisp,v 1.4 2003/11/24 13:43:42 lgorrie Exp $
 ;;;
 
 ;; This is a skeletal implementation of the Slime internals interface.
@@ -47,7 +47,6 @@
     :accessor severity)
 
    (message
-    :documentation "The error or warning message, must be a non-NIL string."
     :initarg :message
     :accessor message)
 
