@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.6 2003/10/16 20:05:21 lgorrie Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.7 2003/10/16 21:03:37 lgorrie Exp $
 ;;;
 
 ;;;
@@ -163,7 +163,7 @@ condition."
               :buffer-offset 0)
         *compiler-notes*))
 
-(defmacro call-trapping-compilation-notes (fn)
+(defun call-trapping-compilation-notes (fn)
   (handler-bind ((ccl::compiler-warning #'handle-compiler-warning))
     (funcall fn)))
 
