@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-lispworks.lisp,v 1.4 2003/11/30 08:12:11 heller Exp $
+;;;   $Id: swank-lispworks.lisp,v 1.5 2003/12/01 22:30:16 heller Exp $
 ;;;
 
 (in-package :swank)
@@ -218,8 +218,7 @@ Return NIL if the symbol is unbound."
   (nth index *sldb-restarts*))
 
 (defslimefun invoke-nth-restart (index)
-  (let ((restart (nth-restart index)))
-    (invoke-restart restart)))
+  (invoke-restart-interactively (nth-restart index)))
 
 (defmethod frame-locals (n)
   (let ((frame (nth-frame n)))

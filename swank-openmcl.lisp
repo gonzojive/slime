@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.26 2003/12/01 22:12:39 heller Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.27 2003/12/01 22:30:26 heller Exp $
 ;;;
 
 ;;;
@@ -352,8 +352,7 @@ at least the filename containing it."
   (nth index *sldb-restarts*))
 
 (defslimefun invoke-nth-restart (index)
-  (let ((restart (nth-restart index)))
-    (invoke-restart restart)))
+  (invoke-restart-interactively (nth-restart index)))
 
 (defslimefun sldb-abort ()
   (invoke-restart (find 'abort *sldb-restarts* :key #'restart-name)))
