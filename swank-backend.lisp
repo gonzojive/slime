@@ -5,7 +5,7 @@
 ;;; Copyright (C) 2003, James Bielman  <jamesjb@jamesjb.com>
 ;;; Released into the public domain.
 ;;;
-;;;   $Id: swank-backend.lisp,v 1.9 2003/12/15 05:27:55 lgorrie Exp $
+;;;   $Id: swank-backend.lisp,v 1.10 2003/12/16 10:28:42 lgorrie Exp $
 ;;;
 
 ;; This is a skeletal implementation of the Slime internals interface.
@@ -57,6 +57,7 @@
            #:interactive-eval
            #:interactive-eval-region
            #:invoke-nth-restart
+           #:invoke-nth-restart-for-emacs
            #:list-all-package-names
            #:list-callees
            #:list-callers
@@ -69,6 +70,7 @@
            #:set-default-directory
            #:set-package
            #:sldb-abort
+           #:sldb-break-with-default-debugger
            #:sldb-continue
            #:slime-debugger-function
            #:start-server
