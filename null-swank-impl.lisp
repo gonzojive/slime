@@ -5,7 +5,7 @@
 ;;; Copyright (C) 2003, James Bielman  <jamesjb@jamesjb.com>
 ;;; Released into the public domain; all warranties are disclaimed.
 ;;;
-;;;   $Id: null-swank-impl.lisp,v 1.2 2003/10/28 23:37:14 jbielman Exp $
+;;;   $Id: null-swank-impl.lisp,v 1.3 2003/11/02 23:08:03 heller Exp $
 ;;;
 
 ;; The "SWANK-IMPL" package contains functions that access the naughty
@@ -58,7 +58,6 @@
   (:use :common-lisp)
   (:export 
    #:backtrace
-   #:backtrace-length
    #:compile-file-trapping-conditions
    #:compile-stream-trapping-conditions
    #:compiler-condition
@@ -261,10 +260,6 @@ backtrace.  For some backends there is no setup and this macro
 simply expands into DEFUN."
   `(defun ,name (,condition ,hook)
     ,@body))
-
-(defun backtrace-length ()
-  "Return the total number of stack frames known to the debugger."
-  0)
 
 (defun backtrace (&optional (start 0) (end most-positive-fixnum))
   "Return a list containing a backtrace of the condition current
