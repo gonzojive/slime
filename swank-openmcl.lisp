@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.4 2003/10/15 22:48:30 dbarlow Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.5 2003/10/15 23:02:26 dbarlow Exp $
 ;;;
 
 ;;;
@@ -181,9 +181,6 @@ condition."
    (lambda ()
      (compile-file filename :load load))))
 
-
-(defslimefun-unimplemented compiler-notes-for-file (filename))
-
 ;;; Debugging
 
 (defvar *sldb-level* 0)
@@ -302,9 +299,6 @@ condition."
 
 (defslimefun describe-class (symbol-name)
   (print-description-to-string (find-class (from-string symbol-name) nil)))
-
-(defslimefun features ()
-  (mapcar #'symbol-name *features*))
 
 (defslimefun-unimplemented apropos-list-for-emacs (name &optional
                                                         external-only
