@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.13 2003/10/28 19:11:58 jbielman Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.14 2003/10/29 23:54:36 heller Exp $
 ;;;
 
 ;;;
@@ -84,23 +84,18 @@ Run the connection handler in a new thread."
   "Thread function for a single Swank connection.  Processes requests
 until the remote Emacs goes away."
   (unwind-protect
-       (loop
-        (catch 'slime-toplevel
-          (with-simple-restart (abort "Return to Slime event loop.")
-            (let ((completed nil))
-              (let* ((*slime-output* (make-instance 'slime-output-stream))
-                     (*slime-input* *standard-input*)
-                     (*slime-io* (make-two-way-stream *slime-input* 
-                                                      *slime-output*)))
-                (let ((condition (catch 'serve-request-catcher
-                                   (read-from-emacs)
-                                   (setq completed t))))
-                  (unless completed
+       (let* ((*slime-output* (make-instance 'slime-output-stream))
+              (*slime-input* *standard-input*)
+              (*slime-io* (make-two-way-stream *slime-input* *slime-output*)))
+         (loop
+            (catch 'slime-toplevel
+              (with-simple-restart (abort "Return to Slime event loop.")
+                (handler-case (read-from-emacs)
+                  (slime-read-error (e)
                     (when *swank-debug-p*
                       (format *debug-io*
-                              "~&;; Connection to Emacs lost.~%;; [~A]~%"
-                              condition))
-                    (return))))))))
+                              "~&;; Connection to Emacs lost.~%;; [~A]~%" e))
+                    (return)))))))
     (format *terminal-io* "~&;; Swank: Closed connection: ~A~%" *emacs-io*)
     (close *emacs-io*)))
 
@@ -382,14 +377,8 @@ at least the filename containing it."
   (let ((restart (nth-restart index)))
     (invoke-restart restart)))
 
-(defslimefun sldb-continue ()
-  (continue *swank-debugger-condition*))
-
 (defslimefun sldb-abort ()
   (invoke-restart (find 'abort *sldb-restarts* :key #'restart-name)))
-
-(defslimefun throw-to-toplevel ()
-  (throw 'slime-toplevel nil))
 
 ;;; Utilities
 
