@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.38 2003/12/16 03:29:18 aruttenberg Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.39 2003/12/16 08:22:03 aruttenberg Exp $
 ;;;
 
 ;;;
@@ -112,8 +112,9 @@
                      (setq *swank-debugger-stack-frame* p)
                      (return-from find-frame))
                    (setq previous-f (ccl::lfun-name lfun)))))
-            (invoke-debugger)
-            (clear-input *terminal-io*)))))))
+      (restart-case (invoke-debugger)
+        (continue () :report (lambda (stream) (write-string "Resume interrupted evaluation" stream)) t))
+      ))))))
 
 (defun accept-loop (server-socket close)
   (unwind-protect (cond (close (accept-one-client server-socket))
