@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.45 2004/01/13 22:51:07 heller Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.46 2004/01/14 06:53:53 lgorrie Exp $
 ;;;
 
 ;;;
@@ -93,7 +93,7 @@
   (ccl:process-run-function name fn))
 
 (defmethod emacs-connected ()
-  (setq ccl::*interactive-abort-process* ccl::*current-process*)
+  (setq ccl::*interactive-abort-process* ccl::*current-process*))
 
 ;;;
 
