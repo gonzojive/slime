@@ -7,8 +7,6 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-gray.lisp,v 1.4 2004/03/09 13:58:50 heller Exp $
-;;;
 
 (in-package :swank-backend)
 
