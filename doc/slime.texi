@@ -45,8 +45,8 @@ o@c this comment prevents a newline!
 @code{\command\}@*
 @end macro
 
-@set EDITION 1.0 alpha
-@set UPDATED @code{$Date: 2004/07/30 03:55:25 $}
+@set EDITION 1.0 beta
+@set UPDATED @code{$Date: 2004/08/03 07:02:43 $}
 
 @titlepage
 @title SLIME User Manual
