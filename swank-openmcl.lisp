@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.10 2003/10/18 05:06:57 jbielman Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.11 2003/10/19 21:40:29 heller Exp $
 ;;;
 
 ;;;
@@ -82,7 +82,10 @@ until the remote Emacs goes away."
         (catch 'slime-toplevel
           (with-simple-restart (abort "Return to Slime event loop.")
             (let ((completed nil))
-              (let ((*slime-output* (make-instance 'slime-output-stream)))
+              (let* ((*slime-output* (make-instance 'slime-output-stream))
+                     (*slime-input* *standard-input*)
+                     (*slime-io* (make-two-way-stream *slime-input* 
+                                                      *slime-output*)))
                 (let ((condition (catch 'serve-request-catcher
                                    (read-from-emacs)
                                    (setq completed t))))
