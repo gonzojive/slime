@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-lispworks.lisp,v 1.14 2004/01/13 22:51:56 heller Exp $
+;;;   $Id: swank-lispworks.lisp,v 1.15 2004/01/18 07:15:49 heller Exp $
 ;;;
 
 (in-package :swank)
@@ -26,11 +26,6 @@
    stream:stream-clear-input
    stream:stream-line-column
    ))
-
-(defun without-interrupts* (body)
-  (lispworks:without-interrupts (funcall body)))
-
-(defconstant +sigint+ 2)
 
 ;;; TCP server
 
@@ -68,29 +63,22 @@
   ;; Set SIGINT handler on Swank request handler thread.
   (sys:set-signal-handler +sigint+ #'sigint-handler))
 
+;;; Unix signals
+
 (defun sigint-handler (&rest args)
   (declare (ignore args))
   (invoke-debugger "SIGINT"))
 
-;;;
+(defmethod call-without-interrupts (fn)
+  (lispworks:without-interrupts (funcall fn)))
 
-(defslimefun getpid ()
-  "Return the process ID of this superior Lisp."
+(defmethod getpid ()
   (system::getpid))
 
+;;;
+
 (defmethod arglist-string (fname)
-  "Return the lambda list for function FNAME as a string."
-  (let ((*print-case* :downcase))
-    (multiple-value-bind (function condition)
-        (ignore-errors (values 
-                        (find-symbol-designator fname *buffer-package*)))
-      (when condition
-        (return-from arglist-string (format nil "(-- ~A)" condition)))
-      (let ((arglist (and (fboundp function)
-			  (lispworks:function-lambda-list function))))
-        (if arglist
-            (princ-to-string arglist)
-            "(-- <Unknown-Function>)")))))
+  (format-arglist fname #'lw:function-lambda-list))
 
 (defmethod macroexpand-all (form)
   (walker:walk-form form))
