@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-allegro.lisp,v 1.8 2004/01/16 21:54:21 heller Exp $
+;;;   $Id: swank-allegro.lisp,v 1.9 2004/01/18 07:19:03 heller Exp $
 ;;;
 ;;; This code was written for 
 ;;;   Allegro CL Trial Edition "5.0 [Linux/X86] (8/29/98 10:57)"
@@ -32,9 +32,6 @@
    excl:stream-read-char-no-hang
    ))
 
-(defun without-interrupts* (body)
-  (excl:without-interrupts (funcall body)))
-
 ;;;; TCP Server
 
 (defmethod create-socket (port)
@@ -51,21 +48,18 @@
 
 (defmethod emacs-connected ())
 
-(defslimefun getpid ()
+;;;; Unix signals
+
+(defmethod call-without-interrupts (fn)
+  (excl:without-interrupts (funcall fn)))
+
+(defmethod getpid ()
   (excl::getpid))
 
 ;;;; Misc
 
 (defmethod arglist-string (fname)
-  (declare (type string fname))
-  (multiple-value-bind (function condition)
-      (ignore-errors (values (from-string fname)))
-    (when condition
-      (return-from arglist-string (format nil "(-- ~A)" condition)))
-    (multiple-value-bind (arglist condition) 
-        (ignore-errors (values (excl:arglist function)))
-      (cond (condition (format  nil "(-- ~A)" condition))
-            (t (format nil "(~{~A~^ ~})" arglist))))))
+  (format-arglist fname #'excl:arglist))
 
 (defun apropos-symbols (string &optional external-only package)
   (remove-if (lambda (sym)
