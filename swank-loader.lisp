@@ -7,11 +7,12 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-loader.lisp,v 1.3 2003/11/16 18:10:25 heller Exp $
+;;;   $Id: swank-loader.lisp,v 1.4 2003/11/19 12:12:09 heller Exp $
 ;;;
 
 (defpackage :swank-loader
   (:use :common-lisp))
+
 (in-package :swank-loader)
 
 (defun make-swank-pathname (name &optional (type "lisp"))
@@ -36,7 +37,7 @@
   "Returns true if NEW-FILE is newer than OLD-FILE."
   (> (file-write-date new-file) (file-write-date old-file)))
 
-(defun compile-files-if-needed-serially (&rest files)
+(defun compile-files-if-needed-serially (files)
   "Compile each file in FILES if the source is newer than
 its corresponding binary, or the file preceding it was 
 recompiled."
@@ -57,5 +58,15 @@ recompiled."
             ;; so we can try to debug it.
             (load source-pathname)))))))
 
-(apply #'compile-files-if-needed-serially *swank-pathname* *sysdep-pathnames*)
+(defun user-init-file ()
+  "Return a the name of the user init file or nil."
+  (let ((filename (format nil "~A/.swank.lisp"
+                          (namestring (user-homedir-pathname)))))
+    (cond ((probe-file filename) filename)
+          (t nil))))
+
+(compile-files-if-needed-serially (cons *swank-pathname* *sysdep-pathnames*))
+
+(when (user-init-file)
+  (load (user-init-file)))
 
