@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.30 2003/12/12 11:18:21 heller Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.31 2003/12/12 12:38:23 heller Exp $
 ;;;
 
 ;;;
@@ -429,7 +429,7 @@ at least the filename containing it."
                          (symbol
                           (find-source-locations caller (symbol-name caller)))
                          (method 
-                          (let ((n (ccl:method-name  caller)))
+                          (let ((n (ccl::method-name caller)))
                             (find-source-locations n (symbol-name n))))
                          (t 
                           (find-source-locations caller (to-string caller))))))
