@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.28 2003/12/07 19:16:24 heller Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.29 2003/12/10 13:26:08 heller Exp $
 ;;;
 
 ;;;
@@ -76,15 +76,15 @@
 ;; In OpenMCL, the Swank backend runs in a separate thread and simply
 ;; blocks on its TCP port while waiting for forms to evaluate.
 
-(defun create-swank-server (port &key reuse-address)
-  "Create a Swank TCP server on `port'.
-Return the port number that the socket is actually listening on."
+(defun create-swank-server (port &key (reuse-address t) 
+                            (announce #'simple-announce-function))
+  "Create a Swank TCP server on `port'."
   (let ((server-socket (ccl:make-socket :connect :passive :local-port port
                                         :reuse-address reuse-address)))
+    (funcall announce (ccl:local-port server-socket))
     (ccl:process-run-function "Swank Request Processor"
                               #'swank-accept-connection
-                              server-socket)
-    (ccl:local-port server-socket)))
+                              server-socket)))
 
 (defun swank-accept-connection (server-socket)
   "Accept one Swank TCP connection on SOCKET and then close it.
