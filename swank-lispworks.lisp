@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-lispworks.lisp,v 1.8 2003/12/10 13:26:08 heller Exp $
+;;;   $Id: swank-lispworks.lisp,v 1.9 2003/12/14 07:59:36 heller Exp $
 ;;;
 
 (in-package :swank)
@@ -261,20 +261,6 @@ Return NIL if the symbol is unbound."
 
 (defmethod find-function-locations (fname)
   (dspec-source-locations (from-string fname)))
-
-;;; Tracing
-
-(defun tracedp (symbol)
-  (member symbol (trace) :test #'eq))
-
-(defslimefun toggle-trace-fdefinition (fname-string)
-  (let ((fname (from-string fname-string)))
-    (cond ((tracedp fname)
-           (compiler::ensure-untrace-1 (list fname))
-	   (format nil "~S is now untraced." fname))
-	  (t
-           (compiler::ensure-trace-1 (list fname))
-	   (format nil "~S is now traced." fname)))))
 
 ;;; callers
 
