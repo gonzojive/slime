@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-lispworks.lisp,v 1.13 2004/01/13 18:20:04 heller Exp $
+;;;   $Id: swank-lispworks.lisp,v 1.14 2004/01/13 22:51:56 heller Exp $
 ;;;
 
 (in-package :swank)
@@ -43,11 +43,11 @@
   (multiple-value-bind (socket where errno)
       (comm::create-tcp-socket-for-service port :address "localhost")
     (cond (socket socket)
-          (t (error 'network-error "asdf ~A") 
+          (t (error 'network-error 
               :format-control "~A failed: ~A (~D)"
               :format-arguments (list where 
                                       (list #+unix (lw:get-unix-error errno))
-                                      errno)))))
+                                      errno))))))
 
 (defmethod local-port (socket)
   (nth-value 1 (comm:get-socket-address (socket-fd socket))))
