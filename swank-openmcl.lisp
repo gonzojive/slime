@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.39 2003/12/16 08:22:03 aruttenberg Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.40 2003/12/17 17:07:51 aruttenberg Exp $
 ;;;
 
 ;;;
@@ -423,7 +423,20 @@ at least the filename containing it."
      (declare (ignore p tcr pc))
      (when (and (= frame-number index) lfun)
        (return-from frame-source-location-for-emacs
-         (function-source-location (ccl:function-name lfun)))))))
+         (if (typep lfun 'ccl::method-function)
+             (method-source-location lfun)
+             (function-source-location (ccl:function-name lfun))))))))
+
+;; FIXME this is still wrong since it doesn't pass back which method in the file is the one you are looking for.
+(defun method-source-location (method)
+  (multiple-value-bind (files name type specializers qualifiers)
+      (ccl::edit-definition-p method)
+    (declare (ignore type specializers qualifiers))
+    (let ((file (cdr (car files))))
+      `(:location
+        (:file
+         ,(namestring (translate-logical-pathname file)))
+        (:function-name ,(string name))))))
 
 (defun nth-restart (index)
   (nth index *sldb-restarts*))
