@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-loader.lisp,v 1.7 2003/12/06 13:08:52 heller Exp $
+;;;   $Id: swank-loader.lisp,v 1.8 2003/12/12 03:22:36 dbarlow Exp $
 ;;;
 
 (defpackage :swank-loader
@@ -27,8 +27,8 @@
 
 (defparameter *sysdep-pathnames*
   (mapcar #'make-swank-pathname 
-          #+cmu '("swank-cmucl")
-          #+sbcl '("swank-sbcl" "swank-gray")
+          #+cmu '("swank-cmucl" "swank-source-path-parser")
+          #+sbcl '("swank-sbcl" "swank-source-path-parser" "swank-gray")
           #+openmcl '("swank-openmcl" "swank-gray")
           #+lispworks '("swank-lispworks" "swank-gray")
           #+allegro '("swank-allegro" "swank-gray")
