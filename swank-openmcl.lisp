@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.41 2003/12/18 19:57:42 aruttenberg Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.42 2003/12/19 05:50:18 aruttenberg Exp $
 ;;;
 
 ;;;
@@ -161,7 +161,9 @@
                   (make-instance 'slime-output-stream)))
          (in (make-instance 'slime-input-stream))
          (io (make-two-way-stream in out)))
-    (do () ((serve-one-request stream out in io)))))
+    (push out ccl::*auto-flush-streams*)
+    (unwind-protect (do () ((serve-one-request stream out in io)))
+      (setq ccl::*auto-flush-streams* (remove out ccl::*auto-flush-streams*)))))
 
 (defun serve-one-request (*emacs-io* *slime-output* *slime-input* *slime-io*)
   (catch 'slime-toplevel
