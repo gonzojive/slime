@@ -5,7 +5,7 @@
 ;;; Copyright (C) 2003, James Bielman  <jamesjb@jamesjb.com>
 ;;; Released into the public domain.
 ;;;
-;;;   $Id: swank-backend.lisp,v 1.5 2003/11/27 00:44:40 heller Exp $
+;;;   $Id: swank-backend.lisp,v 1.6 2003/11/29 22:12:42 dbarlow Exp $
 ;;;
 
 ;; This is a skeletal implementation of the Slime internals interface.
@@ -80,6 +80,7 @@
            #:sldb-abort
            #:sldb-continue
            #:take-input
+           #:slime-debugger-function
            ))
 
 (in-package :swank)
