@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-loader.lisp,v 1.13 2004/01/15 18:27:40 heller Exp $
+;;;   $Id: swank-loader.lisp,v 1.14 2004/01/19 20:15:19 lgorrie Exp $
 ;;;
 
 (cl:defpackage :swank-loader
@@ -75,6 +75,8 @@ recompiled."
 (compile-files-if-needed-serially
   (list* (make-swank-pathname "swank-backend") *swank-pathname*
          *sysdep-pathnames*))
+
+(swank:warn-unimplemented-interfaces)
 
 (when (user-init-file)
   (load (user-init-file)))
