@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-loader.lisp,v 1.8 2003/12/12 03:22:36 dbarlow Exp $
+;;;   $Id: swank-loader.lisp,v 1.9 2003/12/12 11:13:07 heller Exp $
 ;;;
 
 (defpackage :swank-loader
@@ -27,7 +27,7 @@
 
 (defparameter *sysdep-pathnames*
   (mapcar #'make-swank-pathname 
-          #+cmu '("swank-cmucl" "swank-source-path-parser")
+          #+cmu '("swank-source-path-parser" "swank-cmucl")
           #+sbcl '("swank-sbcl" "swank-source-path-parser" "swank-gray")
           #+openmcl '("swank-openmcl" "swank-gray")
           #+lispworks '("swank-lispworks" "swank-gray")
@@ -64,11 +64,12 @@ recompiled."
 
 (defun user-init-file ()
   "Return the name of the user init file or nil."
-  (let ((filename (format nil "~A/.swank.lisp"
-                          (namestring (translate-logical-pathname
-                                       (user-homedir-pathname))))))
-    (cond ((probe-file filename) filename)
-          (t nil))))
+  (let ((home (user-homedir-pathname)))
+    (when (probe-file home)
+      (let ((filename (format nil "~A/.swank.lisp"
+                              (namestring (truename home)))))
+        (cond ((probe-file filename) filename)
+              (t nil))))))
 
 (compile-files-if-needed-serially
  (list* (make-swank-pathname "swank-backend") *swank-pathname*
