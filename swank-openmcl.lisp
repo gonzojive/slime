@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.1 2003/09/29 00:25:18 jamesjb Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.2 2003/10/15 21:24:33 dbarlow Exp $
 ;;;
 
 ;;;
@@ -47,10 +47,6 @@
 ;;;
 
 ;;; Administrivia
-
-(defpackage :swank
-  (:use :common-lisp)
-  (:export #:start-server))
 
 (in-package :swank)
 
@@ -140,11 +136,6 @@ back to the main request handling loop."
         (read-form string))
     (condition (c)
       (throw 'serve-request-catcher c))))
-
-(defvar *swank-io-package*
-  (let ((package (make-package "SWANK-IO-PACKAGE")))
-    (import 'nil package)
-    package))
 
 (defun read-form (string)
   (with-standard-io-syntax
