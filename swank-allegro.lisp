@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-allegro.lisp,v 1.10 2004/01/20 23:40:48 heller Exp $
+;;;   $Id: swank-allegro.lisp,v 1.11 2004/01/22 00:37:35 heller Exp $
 ;;;
 ;;; This code was written for 
 ;;;   Allegro CL Trial Edition "5.0 [Linux/X86] (8/29/98 10:57)"
@@ -178,6 +178,17 @@
    form
    (debugger:environment-of-frame (nth-frame frame-number))))
 
+(defimplementation return-from-frame (frame-number form)
+  (let ((frame (nth-frame frame-number)))
+    (multiple-value-call #'debugger:frame-return 
+      frame (debugger:eval-form-in-context 
+             (from-string form) (debugger:environment-of-frame frame)))))
+                         
+;;; XXX doens't work for frames with arguments 
+(defimplementation restart-frame (frame-number)
+  (let ((frame (nth-frame frame-number)))
+    (debugger:frame-retry frame (debugger:frame-function frame))))
+                          
 ;;;; Compiler hooks
 
 (defvar *buffer-name* nil)
