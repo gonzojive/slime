@@ -7,10 +7,10 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-gray.lisp,v 1.3 2004/01/13 18:21:48 heller Exp $
+;;;   $Id: swank-gray.lisp,v 1.4 2004/03/09 13:58:50 heller Exp $
 ;;;
 
-(in-package :swank)
+(in-package :swank-backend)
 
 (defclass slime-output-stream (fundamental-character-output-stream)
   ((output-fn :initarg :output-fn)
@@ -103,7 +103,7 @@
 
 
 ;;;
-(defmethod make-fn-streams (input-fn output-fn)
+(defimplementation make-fn-streams (input-fn output-fn)
   (let* ((output (make-instance 'slime-output-stream 
                                 :output-fn output-fn))
          (input  (make-instance 'slime-input-stream
