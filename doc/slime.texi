@@ -38,7 +38,7 @@ o@c this comment prevents a newline!
 @end macro
 
 @set EDITION DRAFT
-@set UPDATED @code{$Id: slime.texi,v 1.6 2004/04/05 06:19:23 lgorrie Exp $}
+@set UPDATED @code{$Id: slime.texi,v 1.7 2004/04/14 19:14:48 lgorrie Exp $}
 
 @titlepage
 @title SLIME User Manual
@@ -790,6 +790,18 @@ These commands are like @code{beginning-of-defun} and
 instead go directly to the beginning or the end, respectively.
 
 @end table
+
+@node Shortcuts
+@section Shortcuts
+
+``Shortcuts'' are a special set of @REPL{} commands that are invoked
+by name. To invoke a shortcut you first press @kbd{,} (comma) at the
+@REPL{} prompt and then enter the shortcut's name when prompted.
+
+Shortcuts deal with things like switching between directories and
+compiling and loading Lisp systems. The exact set of shortcuts is not
+currently documented in this manual, but you can use the @code{help}
+shortcut to list them interactively.
 
 @node Debugger, Extras, REPL, Top
 @chapter @SLDB{}: the @SLIME{} debugger
