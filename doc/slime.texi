@@ -46,7 +46,7 @@ o@c this comment prevents a newline!
 @end macro
 
 @set EDITION DRAFT
-@set UPDATED @code{$Id: slime.texi,v 1.10 2004/04/20 22:42:05 heller Exp $}
+@set UPDATED @code{$Id: slime.texi,v 1.11 2004/04/21 21:51:50 heller Exp $}
 
 @titlepage
 @title SLIME User Manual
@@ -552,6 +552,10 @@ completion. @xref{Emacs-side customization}.
 @kbditem{SPC, slime-space}
 The space key inserts a space and also looks up and displays the
 argument list for the function at point, if there is one.
+
+@kbditem{C-c C-s, slime-insert-arglist}
+Looks up and inserts into the current buffer the argument list for the
+function at point, if there is one.
 
 @kbditem{C-c C-m, slime-macroexpand-1}
 Macroexpand the expression at point once.
