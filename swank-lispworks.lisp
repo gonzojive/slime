@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-lispworks.lisp,v 1.18 2004/01/21 22:35:38 heller Exp $
+;;;   $Id: swank-lispworks.lisp,v 1.19 2004/01/21 23:03:23 heller Exp $
 ;;;
 
 (in-package :swank)
@@ -165,7 +165,8 @@ Return NIL if the symbol is unbound."
 
 (defun interesting-frame-p (frame)
   (or (dbg::call-frame-p frame)
-      (dbg::catch-frame-p frame)))
+      ;;(dbg::catch-frame-p frame)
+      ))
 
 (defun nth-frame (index)
   (do ((frame (dbg::debugger-stack-current-frame dbg::*debugger-stack*)
