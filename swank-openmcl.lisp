@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 ;;;
-;;;   $Id: swank-openmcl.lisp,v 1.46 2004/01/14 06:53:53 lgorrie Exp $
+;;;   $Id: swank-openmcl.lisp,v 1.47 2004/01/16 06:51:08 lgorrie Exp $
 ;;;
 
 ;;;
@@ -667,4 +667,31 @@ nil if there's no second element."
 	     (t
 	      (push (cons (string 'rest) in-list) reversed-elements)
 	      (done "The object is an improper list of length ~S.~%")))))))
+
+;;; Multiprocessing
+
+(defvar *known-processes* '()         ; FIXME: leakage. -luke
+  "Alist (ID . PROCESS) list of processes that we have handed out IDs for.")
+
+(defmethod spawn (fn &key name)
+  (ccl:process-run-function (or name "Anonymous (Swank)") fn))
+
+(defmethod startup-multiprocessing ()
+  (setq *swank-in-background* :spawn))
+
+(defmethod thread-id ()
+  (let ((id (ccl::process-serial-number ccl:*current-process*)))
+    ;; Possibly not thread-safe.
+    (pushnew (cons id ccl:*current-process*) *known-processes*)
+    id))
+
+(defmethod thread-name (thread-id)
+  (ccl::process-name (cdr (assq thread-id *known-processes*))))
+
+(defmethod make-lock (&key name)
+  (ccl:make-lock name))
+
+(defmethod call-with-lock-held (lock function)
+  (ccl:with-lock-grabbed (lock)
+    (funcall function)))
 
