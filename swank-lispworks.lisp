@@ -7,7 +7,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 ;;;
-;;;   $Id: swank-lispworks.lisp,v 1.1 2003/11/27 00:36:36 heller Exp $
+;;;   $Id: swank-lispworks.lisp,v 1.2 2003/11/28 14:28:17 heller Exp $
 ;;;
 
 (in-package :swank)
@@ -296,9 +296,12 @@ able to return the file name in which the definition occurs."
     (delete-file filename)))
 
 (defun make-dspec-location (dspec filename &optional tmpfile buffer position)
-  (list :dspec (cond ((and tmpfile (pathname-match-p filename tmpfile))
-		      (list :buffer buffer position))
-		     (t (list :file (namestring filename))))
+  (list :dspec 
+        (cond ((and tmpfile (pathname-match-p filename tmpfile))
+               (list :buffer buffer position))
+              (t 
+               (let ((name (namestring (translate-logical-pathname filename))))
+                 (list :file name))))
 	(string (etypecase dspec
 		  (symbol dspec)
 		  (cons (dspec:dspec-primary-name dspec))))))
@@ -321,7 +324,7 @@ able to return the file name in which the definition occurs."
 		(make-dspec-location dspec filename tmpfile buffer position)
 		nil)))
 	   htab))
-  
+
 (defmethod compile-string-for-emacs (string &key buffer position)
   (assert buffer)
   (assert position)
@@ -330,8 +333,9 @@ able to return the file name in which the definition occurs."
 	(tmpname (hcl:make-temp-file nil "lisp")))
     (with-compilation-unit ()
       (compile-from-temp-file string tmpname)
+      (format t "~A~%" compiler:*messages*)
       (signal-error-data-base
        compiler::*error-database* tmpname buffer position)
       (signal-undefined-functions compiler::*unknown-functions*
-				  tmpname tmpname buffer position))))
+                                  tmpname tmpname buffer position))))
 
