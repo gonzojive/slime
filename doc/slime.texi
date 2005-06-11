@@ -46,7 +46,7 @@ o@c this comment prevents a newline!
 @end macro
 
 @set EDITION 1.2
-@set UPDATED @code{$Date: 2005/06/07 10:06:50 $}
+@set UPDATED @code{$Date: 2005/06/11 16:22:24 $}
 
 @titlepage
 @title SLIME User Manual
@@ -214,8 +214,7 @@ best-supported, are:
 @item
 CMU Common Lisp (@acronym{CMUCL}), 18e or newer
 @item
-Steel Bank Common Lisp (@acronym{SBCL}), from version 0.8.15 to 0.8.21
-(newer versions may or may not work)
+Steel Bank Common Lisp (@acronym{SBCL}), latest official release
 @item
 OpenMCL, version 0.14.3
 @item
