@@ -7364,10 +7364,17 @@ When displaying XREF information, this goes to the next reference."
 NB: Does not affect *slime-eval-macroexpand-expression*"
   (interactive)
   (lexical-let* ((string (slime-sexp-at-point-or-error))
+                 (bounds (bounds-of-thing-at-point 'sexp))
+                 (start (car bounds))
+                 (end (cdr bounds))
+                 (point (point))
                  (package (slime-current-package))
-                 (start (point))
-                 (end (+ start (length string)))
                  (buffer (current-buffer)))
+    ;; SLIME-SEXP-AT-POINT returns "'(FOO BAR BAZ)" even when point is
+    ;; placed at the opening parenthesis, which wouldn't get expanded
+    ;; even though FOO was a macro. Hence this workaround:
+    (when (and (eq ?\' (elt string 0)) (eq ?\( (elt string 1)))
+      (setf string (substring string 1)) (incf start))
     (slime-eval-async 
      `(,expander ,string)
      (lambda (expansion)
@@ -7377,7 +7384,8 @@ NB: Does not affect *slime-eval-macroexpand-expression*"
            (delete-region start end)
            (insert expansion)
            (goto-char start)
-           (indent-sexp)))))))
+           (indent-sexp)
+           (goto-char point)))))))
 
 (defun slime-macroexpand-1 (&optional repeatedly)
   "Display the macro expansion of the form at point.  The form is
