@@ -9424,7 +9424,8 @@ be treated as a paragraph.  This is useful for filling docstrings."
                 (slime-sync-package-and-default-directory "Synch default package and directory with current buffer")
                 (slime-next-note "Next compiler note")
                 (slime-previous-note "Previous compiler note")
-                (slime-remove-notes "Remove notes")))
+                (slime-remove-notes "Remove notes")
+                slime-hyperspec-lookup))
     (:title "Completion"
      :map slime-mode-map
      :bindings (slime-indent-and-complete-symbol
