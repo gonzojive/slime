@@ -70,6 +70,9 @@
 (defvar slime-use-highlight-edits-mode nil
   "When non-nil always enable slime-highlight-edits-mode in slime-mode")
 
+(defvar slime-highlight-compiler-notes t
+  "When non-nil highlight buffers with compilation notes, warnings and errors.")
+
 (defun* slime-setup (&key autodoc typeout-frame highlight-edits)
   "Setup Emacs so that lisp-mode buffers always use SLIME."
   (when (member 'lisp-mode slime-lisp-modes)
@@ -4551,7 +4554,8 @@ Each newlines and following indentation is replaced by a single space."
       (setf slime-compilation-just-finished t)
       (multiple-value-bind (result secs) result
         (slime-show-note-counts notes secs)
-        (slime-highlight-notes notes)))
+        (when slime-highlight-compiler-notes
+          (slime-highlight-notes notes))))
     (run-hook-with-args 'slime-compilation-finished-hook notes)))
 
 (defun slime-compilation-finished-continuation ()
