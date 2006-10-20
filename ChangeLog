@@ -1,3 +1,8 @@
+2006-10-20  Marco Baringer  <mb@bese.it>
+	
+	* slime.el (slime-target-buffer-fuzzy-completions-map): Fix a dug
+	I introduced when applying levente's patch.
+
 2006-10-20  Martin Simmons <martin@lispworks.com>
 
 	* swank-backend.lisp (initialize-multiprocessing): New API to
