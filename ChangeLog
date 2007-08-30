@@ -1,3 +1,10 @@
+2007-08-31  Jon Allen Boone <ipmonger@delamancha.org>
+
+	* swank-cmucl.lisp: CMUCL now has an x86-Darwin port as well as
+	  the PPC-Darwin version. Changed to conditionalize on the
+	  presence of darwin instead of ppc so that slime works with both
+	  Darwin versions of CMUCL.
+	
 2007-08-31  Tobias C. Rittweiler <tcr@freebits.de>
 
 	* slime.el (slime-sexp-at-point): Explicitely set current syntax
