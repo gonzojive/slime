@@ -12,7 +12,7 @@
 @set EDITION 3.0-alpha
 @set SLIMEVER 3.0-alpha
 @c @set UPDATED @today{}
-@set UPDATED @code{$Date: 2008/01/20 16:57:49 $}
+@set UPDATED @code{$Date: 2008/10/10 06:09:32 $}
 @set TITLE SLIME User Manual
 @settitle @value{TITLE}, version @value{EDITION}
 
@@ -1185,6 +1185,10 @@ value. If point is on an action then call that action.
 
 @kbditem{d, slime-inspector-describe}
 Describe the slot at point.
+
+@kbditem{v, slime-inspector-toggle-verbose}
+Toggle between verbose and terse mode. Default is determined by
+`swank:*inspector-verbose*'.
 
 @kbditem{l, slime-inspector-pop}
 Go back to the previous object (return from @kbd{RET}).
