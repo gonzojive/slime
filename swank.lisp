@@ -2191,8 +2191,13 @@ Used by pprint-eval.")
   
 (defslimefun pprint-eval (string)
   (with-buffer-syntax ()
-    (with-retry-restart (:msg "Retry SLIME evaluation request.")
-      (swank-pprint (multiple-value-list (eval (read-from-string string)))))))
+    (let* ((s (make-string-output-stream))
+           (values 
+            (let ((*standard-output* s)
+                  (*trace-output* s))
+              (multiple-value-list (eval (read-from-string string))))))
+      (cat (get-output-stream-string s)
+           (swank-pprint values)))))
 
 (defslimefun set-package (name)
   "Set *package* to the package named NAME.
