@@ -12,7 +12,7 @@
 @set EDITION 3.0-alpha
 @set SLIMEVER 3.0-alpha
 @c @set UPDATED @today{}
-@set UPDATED @code{$Date: 2009/03/09 11:07:20 $}
+@set UPDATED @code{$Date: 2009/03/09 11:34:29 $}
 @set TITLE SLIME User Manual
 @settitle @value{TITLE}, version @value{EDITION}
 
@@ -980,7 +980,7 @@ argument list for the function at point, if there is one.
 @kbditem{C-c C-d d, slime-describe-symbol}
 Describe the symbol at point.
 
-@kbditem{C-c C-f, slime-describe-function}
+@kbditem{C-c C-d f, slime-describe-function}
 Describe the function at point.
 
 @kbditem{C-c C-d a, slime-apropos}
