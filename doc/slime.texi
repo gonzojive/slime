@@ -12,7 +12,7 @@
 @set EDITION 3.0-alpha
 @set SLIMEVER 3.0-alpha
 @c @set UPDATED @today{}
-@set UPDATED @code{$Date: 2009/03/09 11:34:29 $}
+@set UPDATED @code{$Date: 2009/03/12 15:41:15 $}
 @set TITLE SLIME User Manual
 @settitle @value{TITLE}, version @value{EDITION}
 
@@ -1009,7 +1009,6 @@ Note: this is one case where @kbd{C-c C-d h} is @emph{not} the same as
 
 @kbditem{C-c C-d ~, hyperspec-lookup-format}
 Lookup a @emph{format character} in the @cite{Common Lisp Hyperspec}.
-@end table
 
 @kbditem{C-c C-d #, hyperspec-lookup-reader-macro}
 Lookup a @emph{reader macro} in the @cite{Common Lisp Hyperspec}.
