@@ -12,7 +12,7 @@
 @set EDITION 3.0-alpha
 @set SLIMEVER 3.0-alpha
 @c @set UPDATED @today{}
-@set UPDATED @code{$Date: 2009/09/21 19:36:54 $}
+@set UPDATED @code{$Date: 2009/09/24 11:30:47 $}
 @set TITLE SLIME User Manual
 @settitle @value{TITLE}, version @value{EDITION}
 
@@ -2868,7 +2868,7 @@ Expand / collapse function details (callers, calls to)
 @kbditem{v, slime-sprof-browser-view-source}
 View function sources. 
 @kbditem{d, slime-sprof-browser-disassemble-function}
-Disassabmle function.
+Disassemble function.
 
 @end table
 
