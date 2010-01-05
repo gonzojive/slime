@@ -12,7 +12,7 @@
 @set EDITION 3.0-alpha
 @set SLIMEVER 3.0-alpha
 @c @set UPDATED @today{}
-@set UPDATED @code{$Date: 2009/12/17 10:15:18 $}
+@set UPDATED @code{$Date: 2010/01/05 09:33:09 $}
 @set TITLE SLIME User Manual
 @settitle @value{TITLE}, version @value{EDITION}
 
@@ -2371,7 +2371,7 @@ also tracks the current directory of the Lisp process.
 To install it, add something like this to user @file{.emacs}:
 
 @example
-(slime-setup '(inferior-slime-mode))
+(slime-setup '(inferior-slime))
 @end example
 
 @table @kbd
