@@ -12,7 +12,7 @@
 @set EDITION 3.0-alpha
 @set SLIMEVER 3.0-alpha
 @c @set UPDATED @today{}
-@set UPDATED @code{$Date: 2010/03/03 19:51:33 $}
+@set UPDATED @code{$Date: 2010/03/21 13:45:29 $}
 @set TITLE SLIME User Manual
 @settitle @value{TITLE}, version @value{EDITION}
 
@@ -1489,6 +1489,8 @@ Inspect the condition currently being debugged.
 
 @kbditem{:, slime-interactive-eval}
 Evaluate an expression entered in the minibuffer.
+@kbditem{A, sldb-break-with-system-debugger}
+Attach debugger (e.g. gdb) to the current lisp process.
 
 @end table
 
