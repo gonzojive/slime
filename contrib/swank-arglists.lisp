@@ -44,17 +44,44 @@ Otherwise NIL is returned."
                   (setq found v))))
     found))
 
+(defvar *external-valid-operator-symbol-p-hooks* nil
+  "A list of functions for determining whether a given symbol is the
+name of a valid operator.  If any of these returns T when called with
+a single argument (the symbol), then the operator is a valid symbol.")
+
+(defvar *external-valid-function-name-p-hooks* nil
+  "A list of functions for determining whether a given symbol is the
+name of a valid function.  If any of these returns T when called with
+a single argument (the symbol), then the operator is a valid symbol.")
+
+(defun external-valid-operator-symbol-p (symbol)
+  "Returns T if some 3rd party hook claims that symbol is a valid
+operator."
+  (or (and (find-if #'identity *external-valid-operator-symbol-p-hooks*
+                    :key #'(lambda (fn) (funcall fn symbol)))
+           t)
+      (external-valid-function-p symbol)))
+
 (defun valid-operator-symbol-p (symbol)
   "Is SYMBOL the name of a function, a macro, or a special-operator?"
   (or (fboundp symbol)
       (macro-function symbol)
       (special-operator-p symbol)
-      (member symbol '(declare declaim))))
+      (member symbol '(declare declaim))
+      (external-valid-operator-symbol-p symbol)))
 
 (defun valid-operator-name-p (string)
   "Is STRING the name of a function, macro, or special-operator?"
   (let ((symbol (parse-symbol string)))
     (valid-operator-symbol-p symbol)))
+
+
+(defun external-valid-function-p (symbol)
+  "Returns T if some 3rd party hook claims that symbol is a valid
+function."
+  (and (find-if #'identity *external-valid-function-name-p-hooks*
+                    :key #'(lambda (fn) (funcall fn symbol)))
+           t))
 
 (defun valid-function-name-p (form)
   (and (match form
@@ -708,13 +735,28 @@ forward keywords to OPERATOR."
     (values (arglist.keyword-args arglist)
             (arglist.allow-other-keys-p arglist))))
 
+(defvar *external-extra-keywords-hooks* nil
+  "Called before the default EXTRA-KEYWORDS default method.  If any of
+the methods returns a second value of T, then that is used instead of
+the default EXTRA-KEYWORDS implementation.")
+
+(defun external-extra-keywords-hooks (operator &rest args)
+  (dolist (hook *external-extra-keywords-hooks*)
+    (multiple-value-bind (extra-keywords validp)
+        (apply hook operator args)
+      (when validp
+        (return-from external-extra-keywords-hooks (values extra-keywords t))))))
+  
 (defmethod extra-keywords (operator &rest args)
   ;; default method
-  (declare (ignore args))
-  (let ((symbol-function (symbol-function operator)))
-    (if (typep symbol-function 'generic-function)
-        (generic-function-keywords symbol-function)
-        nil)))
+  (multiple-value-bind (extra-keywords validp)
+      (apply 'external-extra-keywords-hooks operator args)
+    (if validp
+        extra-keywords
+        (let ((symbol-function (and (fboundp operator) (symbol-function operator))))
+          (if (typep symbol-function 'generic-function)
+              (generic-function-keywords symbol-function)
+              nil)))))
 
 (defun class-from-class-name-form (class-name-form)
   (when (and (listp class-name-form)
@@ -873,9 +915,27 @@ was done."
 ANY-ENRICHMENT, just like enrich-decoded-arglist-with-extra-keywords.
 If the arglist is not available, return :NOT-AVAILABLE."))
 
+(defvar *external-compute-enriched-decoded-arglist-hooks* nil
+  "External versions of compute-enriched-decoded-arglist.")
+
+(defvar *external-arglist-hooks* nil
+  "Functions that return 2 values when called with a function name
+symbol:
+1. the lambda list for that function.
+2. T if the function name passed in as an argument is valid.  otherwise the first
+returned value should be ignored ")
+
+(defun arglist* (fname)
+  (dolist (hook *external-arglist-hooks*)
+    (multiple-value-bind (arglist validp)
+        (funcall hook fname)
+      (when validp
+        (return-from arglist* arglist))))
+  (arglist fname))
+
 (defmethod compute-enriched-decoded-arglist (operator-form argument-forms)
   (with-available-arglist (decoded-arglist) 
-      (decode-arglist (arglist operator-form))
+      (decode-arglist (arglist* operator-form))
     (enrich-decoded-arglist-with-extra-keywords decoded-arglist
                                                 (cons operator-form
                                                       argument-forms))))
