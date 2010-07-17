@@ -1231,7 +1231,8 @@ The processing is done in the extent of the toplevel restart."
        :presentation-start :presentation-end
        :new-package :new-features :ed :indentation-update
        :eval :eval-no-wait :background-message :inspect :ping
-       :y-or-n-p :read-from-minibuffer :read-string :read-aborted)
+       :y-or-n-p :read-from-minibuffer :read-string :read-aborted
+       :proxy-event)
       &rest _)
      (declare (ignore _))
      (encode-message event (current-socket-io)))
