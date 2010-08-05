@@ -2135,7 +2135,10 @@ or nil if nothing suitable can be found.")
 (defun slime-eval (sexp &optional package)
   "Evaluate EXPR on the superior Lisp and return the result."
   (when (null package) (setq package (slime-current-package)))
-  (let* ((tag (gensym (format "slime-result-%d-" 
+  (let* ((tag (gensym (format "slime-result-%s-%d-"
+                              (if (and (consp sexp) (symbolp (car sexp)))
+                                  (symbol-name (car sexp))
+                                "")
                               (1+ (slime-continuation-counter)))))
 	 (slime-stack-eval-tags (cons tag slime-stack-eval-tags)))
     (apply
@@ -5489,6 +5492,9 @@ The buffer is chosen more or less randomly."
           (setq accu (append sldb-continuations accu)))))
     accu))
 
+(defvar slime-recursive-edit-depth 0
+  "Keeps recursion in check while entering recursive edits.")
+
 (defun sldb-setup (thread level condition restarts frames conts)
   "Setup a new SLDB buffer.
 CONDITION is a string describing the condition to debug.
@@ -5522,11 +5528,12 @@ CONTS is a list of pending Emacs continuations."
     (slime-display-popup-buffer t)
     (sldb-recenter-region (point-min) (point))
     (setq buffer-read-only t)
-    (when (and slime-stack-eval-tags
-               ;; (y-or-n-p "Enter recursive edit? ")
-               )
-      (message "Entering recursive edit..")
-      (recursive-edit))))
+    (when slime-stack-eval-tags
+      (let ((slime-recursive-edit-depth (+ 1 slime-recursive-edit-depth)))
+        (when (or (< slime-recursive-edit-depth 3)
+                  (y-or-n-p (format "Enter recursive edit (current depth: %d)? " slime-recursive-edit-depth)))
+          (message "Entering recursive edit..")
+          (recursive-edit))))))
 
 (defun sldb-activate (thread level select)
   "Display the debugger buffer for THREAD.
