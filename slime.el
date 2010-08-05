@@ -5141,6 +5141,11 @@ This variable specifies both what was expanded and how.")
                     (slime-rcurry #'slime-initialize-macroexpansion-buffer
                                   (current-buffer))))
 
+(defvar slime-initialize-macroexpansion-buffer-hook '()
+  "List of functions called the macroexpansion buffer is
+initialized with a fresh macroexpansion. The functions are called
+with the macroexpansion buffer as their argument.")
+
 (defun slime-initialize-macroexpansion-buffer (expansion &optional buffer)
   (pop-to-buffer (or buffer (slime-create-macroexpansion-buffer)))
   (setq buffer-undo-list nil) ; Get rid of undo information from
@@ -5151,7 +5156,9 @@ This variable specifies both what was expanded and how.")
     (insert expansion)
     (goto-char (point-min))
     (indent-sexp)
-    (font-lock-fontify-buffer)))
+    (font-lock-fontify-buffer))
+  (run-hook-with-args 'slime-initialize-macroexpansion-buffer-hook (current-buffer)))
+
 
 (defun slime-create-macroexpansion-buffer ()
   (let ((name (slime-buffer-name :macroexpansion)))
